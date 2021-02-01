@@ -1,37 +1,49 @@
+//Dry Version (Dont Repeat Yourself)
+
 const todos = [];
 
-const pendingClasses =
-  "bg-white w-full text-center text-green-500 rounded py-4 border-2 border-green-500 transition transform ease-in-out duration-300 hover:scale-110 hover:rotate-1 cursor-pointer";
+const get = (elements) =>
+  elements.map((element) => document.getElementById(element));
 
-const completedClasses =
-  "bg-white w-full text-center text-red-500 rounded py-4 border-2 border-red-500 transition transform ease-in-out duration-300 hover:bg-red-500 hover:text-white hover:scale-110 hover:-rotate-1 cursor-pointer";
-const pendingList = document.getElementById("pendingList");
+const [pendingList, completedList, addForm, newTodo] = get([
+  "pendingList",
+  "completedList",
+  "addForm",
+  "newTodo",
+]);
 
-const completedList = document.getElementById("completedList");
-const showTodos = () => {
-  const pendingTodos = todos.filter((todo) => todo.status === "pending");
+const newLists = [
+  {
+    element: pendingList,
+    status: "pending",
+  },
+  {
+    element: pendingList,
+    status: "pending",
+  },
+];
 
-  pendingList.innerHTML = "";
-  pendingTodos.forEach((todo) => {
-    const pendingItem = document.createElement("li");
-    pendingItem.className = pendingClasses;
-    pendingItem.innerText = todo.text;
-    pendingItem.id = todo.id;
-    pendingList.appendChild(pendingItem);
-  });
-  const completedTodos = todos.filter((todo) => todo.status === "done");
-  completedList.innerHTML = "";
-  completedTodos.forEach((todo) => {
-    const completedItem = document.createElement("li");
-    completedItem.className = completedClasses;
-    completedItem.innerText = todo.text;
-    completedItem.id = todo.id;
-    completedList.appendChild(completedItem);
-  });
+const cssClasses = {
+  pending:
+    "bg-white w-full text-center text-green-500 rounded py-4 border-2 border-green-500 transition transform ease-in-out duration-300 hover:scale-110 hover:rotate-1 cursor-pointer",
+  done:
+    "bg-white w-full text-center text-red-500 rounded py-4 border-2 border-red-500 transition transform ease-in-out duration-300 hover:bg-red-500 hover:text-white hover:scale-110 hover:-rotate-1 cursor-pointer",
 };
 
-const addForm = document.getElementById("addForm");
-const newTodo = document.getElementById("newTodo");
+const updateTodos = () => {
+  newLists.forEach((list) => {
+    const filteredTodos = todos.filter((todo) => todo.status === list.status);
+
+    list.element.innerHTML = "";
+    filteredTodos.forEach((todo) => {
+      const item = document.createElement("li");
+      item.className = cssClasses[list[1]];
+      item.innerText = todo.text;
+      item.id = todo.id;
+      list.element.appendChild(item);
+    });
+    });
+  };
 
 addForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -41,15 +53,15 @@ addForm.addEventListener("submit", (event) => {
     status: "pending",
   });
   newTodo.value = "";
-  showTodos();
+  updatetodos();
 });
 
 pendingList.addEventListener("click", (event) => {
-    todos.find((todo) => todo.id === event.target.id).status = "done";
-    showTodos();
-  });
+  todos.find((todo) => todo.id === event.target.id).status = "done";
+  updateTodos();
+});
 
 completedList.addEventListener("click", (event) => {
-  todos.find((todo) => todo.id === event.target.id).status = "pending";
-  showTodos();
+  todos.find((too) => todo.id === event.target.id).status = "pending";
+  updateTodos();
 });
